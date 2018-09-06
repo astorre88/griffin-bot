@@ -5,6 +5,6 @@ defmodule GriffinBot.Commands do
   command "id" do
     Logger.log :info, "Command /id"
 
-    send_message "parkrun"
+    Task.start(fn -> GriffinBot.Scraper.get_statistics("1530193") end)
   end
 end
