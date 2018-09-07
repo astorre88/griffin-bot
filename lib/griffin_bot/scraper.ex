@@ -3,14 +3,34 @@ defmodule GriffinBot.Scraper do
   This module scrapes Parkrun website for collect statistics of runner bu ID.
   """
 
+  require Logger
+
   @url "http://www.parkrun.ru/kuzminki/results/athletehistory/?athleteNumber="
 
-  @spec get_statistics(String.t()) :: String.t()
-  def get_statistics(id) do
-    @url <> id
-    |> to_charlist
-    |> request
-    |> scrape_response
+  @spec get_statistics(binary()) :: [<<_::64, _::_*8>>, ...]
+  def get_statistics(id) when is_binary(id) do
+    profile_url = @url <> id
+
+    statistics =
+      profile_url
+      |> to_charlist
+      |> request
+      |> scrape_response()
+
+    case statistics do
+      "" ->
+        [
+          "Empty statistics!",
+          profile_url
+        ]
+
+      result ->
+        [
+          "   *Дата забега* | *Номер* | *Место* | *Время* | *Рейтинг* | *Личный рекорд?*\n" <>
+            result <> "\n",
+          profile_url
+        ]
+    end
   end
 
   @spec request(charlist()) :: {:ok, charlist()} | {:error, String.t()}
@@ -40,6 +60,7 @@ defmodule GriffinBot.Scraper do
         |> to_string
         |> Floki.find("table#results tbody:nth-child(3)")
         |> construct_list()
+
       {:error, reason} ->
         reason
     end
@@ -53,8 +74,10 @@ defmodule GriffinBot.Scraper do
         |> Enum.take(3)
         |> Enum.map(fn row -> read_cells(row) end)
         |> Enum.join("\n")
+
       _ ->
-        "Empty table!"
+        Logger.log(:info, "Empty table!")
+        "༼ つ ◕_◕ ༽つ"
     end
   end
 
@@ -62,27 +85,34 @@ defmodule GriffinBot.Scraper do
   defp read_cells(table_row) do
     case table_row do
       {"tr", _attributes_list, cells} ->
-        Enum.map(cells, fn cell -> read_cell_value(cell) end)
-        |> Enum.join(" | ")
+        row =
+          cells
+          |> Enum.map(fn cell -> read_cell_value(cell) end)
+          |> Enum.join(" | ")
+
+        "🔸️ " <> row
+
       _ ->
-        "Empty row!"
+        Logger.log(:info, "Empty row!")
+        "¯\\_(ツ)_/¯"
     end
   end
 
   @spec read_cell_value(tuple()) :: String.t()
   defp read_cell_value(table_cell) do
     case table_cell do
-      {"td", _attributes_list, values} ->
-        case hd(values) do
+      {"td", _attributes_list, [value | _]} ->
+        case value do
           {"a", _attributes_list, link_values} ->
-            hd(link_values)
-          [link_value] ->
-            link_value
-          unrecognized ->
-            unrecognized
+            "`#{hd(link_values)}` "
+
+          value ->
+            "   `#{value}`"
         end
+
       _ ->
-        "Empty cell!"
+        Logger.log(:info, "Empty cell!")
+        ""
     end
   end
 end
