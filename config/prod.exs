@@ -1,4 +1,4 @@
 use Mix.Config
 
 config :nadia,
-  token: "${BOT_TOKEN}"
+  token: System.get_env("BOT_TOKEN")
