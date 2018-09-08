@@ -9,16 +9,19 @@ defmodule GriffinBot.Poller do
 
   # API
 
+  @spec start_link() :: :ignore | {:error, any()} | {:ok, pid()}
   def start_link do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
+  @spec update() :: :ok
   def update do
     GenServer.cast(__MODULE__, :update)
   end
 
   # Server
 
+  @spec init(:ok) :: {:ok, 0}
   def init(:ok) do
     update()
     {:ok, 0}

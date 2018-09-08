@@ -1,0 +1,11 @@
+_build/
+deps/
+.git/
+.gitignore
+Dockerfile
+Makefile
+README*
+test/
+
+# local configs
+config/*.local.exs
