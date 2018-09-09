@@ -26,7 +26,7 @@ defmodule GriffinBot.Scraper do
 
       result ->
         [
-          "   *Дата забега* | *Номер* | *Место* | *Время* | *Рейтинг* | *Личный рекорд?*\n" <>
+          "*Дата забега* | *Номер* | *Место* | *Время* | *Рейтинг* | *Личный рекорд?*\n" <>
             result <> "\n",
           profile_url
         ]
@@ -85,12 +85,9 @@ defmodule GriffinBot.Scraper do
   defp read_cells(table_row) do
     case table_row do
       {"tr", _attributes_list, cells} ->
-        row =
-          cells
-          |> Enum.map(fn cell -> read_cell_value(cell) end)
-          |> Enum.join(" | ")
-
-        "🔸️ " <> row
+        cells
+        |> Enum.map(fn cell -> read_cell_value(cell) end)
+        |> Enum.join(" | ")
 
       _ ->
         Logger.log(:info, "Empty row!")
@@ -99,20 +96,13 @@ defmodule GriffinBot.Scraper do
   end
 
   @spec read_cell_value(tuple()) :: String.t()
-  defp read_cell_value(table_cell) do
-    case table_cell do
-      {"td", _attributes_list, [value | _]} ->
-        case value do
-          {"a", _attributes_list, link_values} ->
-            "`#{hd(link_values)}` "
+  defp read_cell_value({"td", _attributes_list, [value | _]}), do: cell_value(value)
+  defp read_cell_value(_), do: ""
 
-          value ->
-            "   `#{value}`"
-        end
+  defp cell_value({"a", _attributes_list, link_values}), do: "`#{hd(link_values)}` "
+  defp cell_value(value), do: value |> String.trim |> grummed_value
 
-      _ ->
-        Logger.log(:info, "Empty cell!")
-        ""
-    end
-  end
+  defp grummed_value("Â"), do: "   `no`"
+  defp grummed_value("ÐÐ°"), do: "   `yes`"
+  defp grummed_value(value), do: "   `#{value}`"
 end
