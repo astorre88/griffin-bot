@@ -27,21 +27,25 @@ defmodule GriffinBot.Commands do
         Logger.log(:info, id)
         [statistics_string, statistics_url] = GriffinBot.Scraper.get_statistics(id)
 
-        {:ok, _} =
-          send_message(statistics_string,
-            parse_mode: "Markdown",
-            reply_markup: %Model.InlineKeyboardMarkup{
-              inline_keyboard: [
-                [
-                  %{
-                    url: statistics_url,
-                    text: "More..."
-                  }
-                ]
-              ]
-            }
-          )
+        send_message(statistics_string, more_button(statistics_url))
     end
+  end
+
+  defp more_button(nil), do: [parse_mode: "Markdown"]
+  defp more_button(statistics_url) do
+    [
+      parse_mode: "Markdown",
+      reply_markup: %Model.InlineKeyboardMarkup{
+        inline_keyboard: [
+          [
+            %{
+              url: statistics_url,
+              text: "More..."
+            }
+          ]
+        ]
+      }
+    ]
   end
 
   defp parkrun_id(update) do

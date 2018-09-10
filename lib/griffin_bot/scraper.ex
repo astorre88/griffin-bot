@@ -7,7 +7,7 @@ defmodule GriffinBot.Scraper do
 
   @url "http://www.parkrun.ru/kuzminki/results/athletehistory/?athleteNumber="
 
-  @spec get_statistics(binary()) :: [<<_::64, _::_*8>>, ...]
+  @spec get_statistics(binary()) :: [nil | <<_::64, _::_*8>>, ...]
   def get_statistics(id) when is_binary(id) do
     profile_url = @url <> id
 
@@ -21,7 +21,7 @@ defmodule GriffinBot.Scraper do
       "" ->
         [
           "Empty statistics!",
-          profile_url
+          nil
         ]
 
       result ->
