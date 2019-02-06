@@ -5,7 +5,7 @@ defmodule GriffinBot.Scraper do
 
   require Logger
 
-  @url "http://www.parkrun.ru/kuzminki/results/athletehistory/?athleteNumber="
+  @url "https://www.parkrun.ru/kuzminki/results/athletehistory/?athleteNumber="
 
   @spec get_statistics(binary()) :: [nil | <<_::64, _::_*8>>, ...]
   def get_statistics(id) when is_binary(id) do
