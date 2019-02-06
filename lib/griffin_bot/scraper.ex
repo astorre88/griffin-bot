@@ -37,6 +37,8 @@ defmodule GriffinBot.Scraper do
   defp request(url) do
     Application.ensure_all_started(:inets)
 
+    Logger.log(:info, url)
+
     case :httpc.request(:get, {url, []}, [{:timeout, :timer.seconds(5)}], []) do
       {:ok, {{'HTTP/1.1', 200, 'OK'}, _headers, body}} ->
         {:ok, body}
@@ -47,7 +49,9 @@ defmodule GriffinBot.Scraper do
             {:error, "ERROR Response: timeout"}
 
           resp_tuple ->
-            {:error, "ERROR Response: #{resp_tuple |> Tuple.to_list() |> hd}"}
+            error_tuple = "ERROR Response: #{resp_tuple |> Tuple.to_list() |> hd}"
+            Logger.log(:error, error_tuple)
+            {:error, error_tuple}
         end
     end
   end
