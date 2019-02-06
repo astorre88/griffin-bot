@@ -25,8 +25,6 @@ defmodule GriffinBot.MixProject do
       # Core
       {:nadia, "~> 0.4.4"},
       {:floki, "~> 0.20.0"},
-      {:porcelain, "~> 2.0"},
-      {:briefly, "~> 0.3"},
 
       # DevOps
       {:distillery, "~> 2.0"}

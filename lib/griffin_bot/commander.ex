@@ -20,12 +20,6 @@ defmodule GriffinBot.Commander do
     end
   end
 
-  defmacro send_photo(photo, options \\ []) do
-    quote bind_quoted: [photo: photo, options: options] do
-      Nadia.send_photo get_chat_id(), photo, options
-    end
-  end
-
   # Helpers
 
   defmacro get_chat_id do

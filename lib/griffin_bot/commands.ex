@@ -25,20 +25,16 @@ defmodule GriffinBot.Commands do
 
       id ->
         Logger.log(:info, id)
-        [statistics, statistics_url] = GriffinBot.Scraper.get_statistics(id)
+        [statistics_string, statistics_url] = GriffinBot.Scraper.get_statistics(id)
 
-        {:ok, image} = GriffinBot.TableGenerator.generate_image(statistics)
-
-        {:ok, path} = Briefly.create
-        File.write!(path, image)
-
-        send_photo(path, more_button(statistics_url))
+        send_message(statistics_string, more_button(statistics_url))
     end
   end
 
-  defp more_button(nil), do: []
+  defp more_button(nil), do: [parse_mode: "Markdown"]
   defp more_button(statistics_url) do
     [
+      parse_mode: "Markdown",
       reply_markup: %Model.InlineKeyboardMarkup{
         inline_keyboard: [
           [
