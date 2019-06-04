@@ -1,6 +1,6 @@
 ARG ALPINE_VERSION=3.8
 
-FROM elixir:1.7.2-alpine AS builder
+FROM elixir:1.8.2-alpine AS builder
 
 ARG APP_NAME
 ARG APP_VSN
