@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION=3.8
+ARG ALPINE_VERSION=3.9
 
 FROM elixir:1.8.2-alpine AS builder
 
@@ -16,7 +16,6 @@ RUN apk update && \
   apk upgrade --no-cache && \
   apk add --no-cache \
     git \
-    erlang-crypto \
     build-base && \
   mix local.rebar --force && \
   mix local.hex --force
