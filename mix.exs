@@ -23,8 +23,8 @@ defmodule GriffinBot.MixProject do
   defp deps do
     [
       # Core
-      {:nadia, "~> 0.4.4"},
-      {:floki, "~> 0.20.0"},
+      {:nadia, "~> 0.5.0"},
+      {:floki, "~> 0.21.0"},
 
       # DevOps
       {:distillery, "~> 2.0"}

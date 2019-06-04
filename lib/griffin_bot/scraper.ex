@@ -5,7 +5,7 @@ defmodule GriffinBot.Scraper do
 
   require Logger
 
-  @url "https://www.parkrun.ru/kuzminki/results/athletehistory/?athleteNumber="
+  @url "https://www.parkrun.ru/results/athleteresultshistory/?athleteNumber="
 
   @spec get_statistics(binary()) :: [nil | <<_::64, _::_*8>>, ...]
   def get_statistics(id) when is_binary(id) do
@@ -26,7 +26,7 @@ defmodule GriffinBot.Scraper do
 
       result ->
         [
-          "*Дата забега* | *Номер* | *Место* | *Время* | *Рейтинг* | *Личный рекорд?*\n" <>
+          "*Event* | *Run Date* | *Gender Pos* | *Overall Pos* | *Time* | *Age Grade*\n" <>
             result <> "\n",
           profile_url
         ]
@@ -62,7 +62,7 @@ defmodule GriffinBot.Scraper do
       {:ok, body} ->
         body
         |> to_string
-        |> Floki.find("table#results tbody:nth-child(3)")
+        |> Floki.find("h1:fl-contains('Most Recent Runs') + table#results tbody:nth-child(2)")
         |> construct_list()
 
       {:error, reason} ->
@@ -103,7 +103,14 @@ defmodule GriffinBot.Scraper do
   defp read_cell_value({"td", _attributes_list, [value | _]}), do: cell_value(value)
   defp read_cell_value(_), do: ""
 
-  defp cell_value({"a", _attributes_list, link_values}), do: "`#{hd(link_values)}` "
+  defp cell_value({"a", _attributes_list, [value | _]}) do
+    case value do
+      {"a", _attributes_list, subvalue} ->
+        cell_value(hd(subvalue))
+      _ ->
+        "`#{hd(value)}` "
+    end
+  end
   defp cell_value(value), do: value |> String.trim |> grummed_value
 
   defp grummed_value("Â"), do: "   `no`"
