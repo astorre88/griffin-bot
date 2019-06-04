@@ -4,7 +4,7 @@ defmodule GriffinBot.MixProject do
   def project do
     [
       app: :griffin_bot,
-      version: "0.1.2",
+      version: "0.1.3",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -23,6 +23,7 @@ defmodule GriffinBot.MixProject do
   defp deps do
     [
       # Core
+      {:jason, "~> 1.1"},
       {:nadia, "~> 0.5.0"},
       {:floki, "~> 0.21.0"},
 
