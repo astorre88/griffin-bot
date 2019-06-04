@@ -6,6 +6,10 @@ defmodule GriffinBot.Commands do
   use GriffinBot.Router
   use GriffinBot.Commander
 
+  require Protocol
+
+  Protocol.derive(Jason.Encoder, Model.InlineKeyboardMarkup)
+
   command "id" do
     Logger.log(:info, "Command /id")
 
