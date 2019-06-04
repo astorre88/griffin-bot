@@ -16,6 +16,7 @@ RUN apk update && \
   apk upgrade --no-cache && \
   apk add --no-cache \
     git \
+    erlang-crypto \
     build-base && \
   mix local.rebar --force && \
   mix local.hex --force
