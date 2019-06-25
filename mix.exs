@@ -5,7 +5,7 @@ defmodule GriffinBot.MixProject do
     [
       app: :griffin_bot,
       version: "0.1.3",
-      elixir: "~> 1.8",
+      elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
